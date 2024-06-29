@@ -1,6 +1,6 @@
 * xref:index.adoc[Antora 기본 UI]
 
-* xref:ui-development-prequisites.adoc[UI 개발 전제조건]
+* xref:ui-development-prerequisites.adoc[UI 개발 전제조건]
 
 * xref:set-up-a-ui-project.adoc[UI 프로젝트 설정]
 
