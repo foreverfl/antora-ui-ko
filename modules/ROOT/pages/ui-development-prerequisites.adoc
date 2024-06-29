@@ -1,0 +1,61 @@
+= UI 개발 전제조건
+
+Antora UI 프로젝트는 Node.js를 기반으로 구축된 도구들을 사용합니다:
+
+* Node.js (명령어: node, npm, 그리고 npx)
+** nvm (선택사항이지만 강력히 권장됨)
+* Gulp CLI (명령어: gulp) (npx gulp로도 접근 가능)
+
+프로젝트를 가져오고 업데이트를 푸시하기 위해 git(명령어: git)도 필요합니다.
+
+== git
+
+먼저, git이 설치되어 있는지 확인하세요.
+
+[source]
+----
+$ git --version
+----
+
+설치되어 있지 않다면, 시스템에 맞는 git 패키지를 다운로드하여 설치하세요.
+
+== Node.js
+
+Antora와 기본 UI를 사용하려면 Node.js가 설치되어 있어야 합니다. Antora는 Node.js 릴리스 일정을 따르므로, 활성 장기 지원(LTS) Node.js 릴리스를 선택하는 것이 좋습니다. 최신 활성 Node.js LTS 버전을 사용하는 것을 권장합니다. 다른 버전의 Node.js도 사용할 수 있지만, Antora는 LTS 릴리스에서만 테스트됩니다.
+
+Node.js가 설치되어 있는지, 어떤 버전인지 확인하려면 터미널을 열고 다음을 입력하세요:
+
+[source]
+----
+$ node --version
+----
+
+다음과 같은 버전 문자열이 표시되어야 합니다:
+
+[source]
+----
+v10.15.3
+----
+
+명령어가 오류와 함께 실패한다면, Node.js가 설치되어 있지 않은 것입니다. Node.js를 설치하는 가장 좋은 방법은 nvm(Node Version Manager)을 사용하는 것입니다. 설치 방법은 nvm 및 Node.js 설치(Linux), nvm 및 Node.js 설치(macOS), 또는 nvm 및 Node.js 설치(Windows) 지침을 참조하세요.
+
+Node.js가 설치되면 Gulp CLI 설치를 진행할 수 있습니다.
+
+== Gulp CLI
+
+다음으로, Gulp CLI를 전역적으로 설치할 수 있습니다. 이 패키지는 프로젝트에서 선언한 Gulp 버전을 실행하는 gulp 명령어를 제공합니다. 다음 명령어를 사용하여 Gulp CLI를 전역적으로 설치할 수 있습니다(nvm을 사용하는 경우 사용자 디렉토리의 위치로 해석됩니다):
+
+[source]
+----
+$ npm i -g gulp-cli
+----
+
+또는 프로젝트 종속성을 설치한 후 npx를 사용하여 gulp 명령어를 실행할 수 있으므로, 전역 설치 요구 사항을 면제할 수 있습니다.
+
+[source]
+----
+$ npx gulp
+----
+
+npx gulp를 사용하는 것이 gulp 명령어를 호출하는 선호되는 방법입니다.
+이제 Node.js와 Gulp가 설치되었으므로 프로젝트 설정을 시작할 준비가 되었습니다.
