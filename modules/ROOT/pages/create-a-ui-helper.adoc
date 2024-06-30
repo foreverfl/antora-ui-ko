@@ -1,0 +1,268 @@
+= UI 헬퍼 생성
+
+이 페이지는 페이지 템플릿(레이아웃 또는 부분)에서 사용할 UI 헬퍼를 만드는 방법을 설명합니다. 헬퍼는 Handlebars가 템플릿에서 헬퍼 호출을 만났을 때 호출하는 JavaScript 함수입니다.
+
+== 헬퍼 구조
+
+헬퍼는 UI 번들의 helpers 디렉토리에 JavaScript 파일로 정의해야 합니다. 파일 확장자를 제외한 파일의 기본 이름이 함수 이름으로 사용됩니다. 예를 들어, 헬퍼가 __helpers/join.js__에 위치한 경우 함수 이름은 join이 됩니다.
+
+Antora가 자동으로 헬퍼를 등록하므로 직접 등록할 필요가 없습니다. 이 자동 동작은 다음과 같은 Handlebars API 호출을 대체합니다(직접 할 필요가 없습니다):
+
+[source,js]
+----
+Handlebars.registerHelper('join', function () { ... })
+----
+
+헬퍼 파일은 정확히 하나의 기본 함수를 내보내야 합니다. 파일 내 함수의 이름은 중요하지 않습니다.
+
+다음은 시작점으로 사용할 수 있는 헬퍼 함수 템플릿입니다:
+
+.new-helper.js
+[source,js]
+----
+'use strict'
+
+module.exports = () => {
+  return true
+}
+----
+
+함수의 반환 값은 템플릿의 로직에서 사용됩니다. 헬퍼가 조건문에서 사용되는 경우 부울 값을 반환해야 합니다(이전 예제와 같이). 헬퍼가 출력을 생성하는 데 사용되는 경우 문자열을 반환해야 합니다. 헬퍼가 반복 루프에서 사용되는 경우 컬렉션을 반환해야 합니다.
+
+이제 템플릿에서 다음과 같이 조건부 헬퍼를 사용할 수 있습니다:
+
+[source,hbs]
+----
+{{#if (new-helper)}}
+항상 참입니다!
+{{/if}}
+----
+
+둥근 괄호는 헬퍼 함수 호출 주위에 항상 필요합니다(Handlebars에 의해 암시되는 경우를 제외하고).
+
+헬퍼는 템플릿 컨텍스트를 마지막 매개변수로 받아 템플릿의 최상위 변수에 접근할 수 있습니다. 최상위 변수는 이 객체의 data.root 속성에 저장됩니다.
+
+.new-helper.js
+[source,js]
+----
+'use strict'
+
+module.exports = ({ data: { root } }) => {
+  return root.site.url === 'https://docs.example.org'
+}
+----
+
+이제 우리의 조건이 변경됩니다:
+
+[source,hbs]
+----
+{{#if (new-helper)}}
+사이트 URL이 https://docs.example.org인 경우에만 참입니다.
+{{/if}}
+----
+
+헬퍼는 입력 매개변수도 받을 수 있습니다. 이러한 매개변수는 컨텍스트 객체 앞의 매개변수 목록에 삽입됩니다. xref:https://handlebarsjs.com/guide/[Handlebars]는 템플릿에서 전달된 입력 매개변수로만 함수를 호출하므로 고정된 수의 매개변수를 사용하는 것이 중요합니다. 그렇지 않으면 컨텍스트 객체의 위치가 변동될 수 있습니다.
+
+.new-helper.js
+[source,js]
+----
+'use strict'
+
+module.exports = (urlToCheck, { data: { root } }) => {
+  return root.site.url === urlToCheck
+}
+----
+
+이제 확인할 URL을 입력 매개변수로 받을 수 있습니다:
+
+[source,hbs]
+----
+{{#if (new-helper 'https://docs.example.org')}}
+지정된 URL과 사이트 URL이 일치하는 경우에만 참입니다.
+{{/if}}
+----
+
+헬퍼 생성에 대한 자세한 정보는 Handlebars 언어 가이드를 참조하세요.
+
+== 헬퍼에서 콘텐츠 카탈로그 사용하기
+
+헬퍼에서 Antora의 콘텐츠 카탈로그를 직접 사용하여 다른 페이지와 리소스를 작업할 수 있습니다. ``page-tags`` 속성에 정의된 특정 태그를 가진 페이지 컬렉션을 만드는 헬퍼를 정의해 보겠습니다. 헬퍼 호출은 다음과 같이 보일 것입니다:
+
+[source,hbs]
+----
+{{#each (pages-with-tag 'tutorial')}}
+----
+
+먼저 __pages-with-tag.js__라는 파일에 헬퍼를 정의합니다. 이 첫 번째 반복에서는 Antora의 콘텐츠 카탈로그에서 원시 가상 파일 객체 컬렉션을 반환하도록 하겠습니다. 파일에 다음 내용을 채웁니다:
+
+.pages-with-tag.js
+[source,js]
+----
+'use strict'
+
+module.exports = (tag, { data }) => {
+  const { contentCatalog } = data.root
+  return contentCatalog.getPages(({ asciidoc, out }) => {
+    if (!out || !asciidoc) return
+    const pageTags = asciidoc.attributes['page-tags']
+    return pageTags && pageTags.split(', ').includes(tag)
+  })
+}
+----
+
+여기서는 콘텐츠 카탈로그에 대한 참조를 얻은 다음 ``getPage()`` 메서드를 사용하여 우리의 기준에 따라 페이지를 필터링합니다. 페이지가 게시 가능한지 확인하기 위해 항상 out 속성의 존재 여부를 확인하는 것이 좋습니다.
+
+템플릿에서 이 헬퍼를 사용하는 방법은 다음과 같습니다:
+
+[source,hbs]
+----
+{{#each (pages-with-tag 'tutorial')}}
+<a href="{{{relativize ./pub.url}}}">{{{./asciidoc.doctitle}}}</a>
+{{/each}}
+----
+
+컬렉션의 페이지 객체가 일반적인 페이지 UI 모델과 다르다는 것을 알 수 있습니다. 컬렉션을 반환하기 전에 각 페이지를 페이지 UI 모델로 변환할 수 있습니다. 이번에는 각 페이지를 Antora의 ``buildPageUiModel`` 함수를 통해 실행하도록 확장을 다시 작성해 보겠습니다:
+
+.pages-with-tag.js
+[source,js]
+----
+'use strict'
+
+module.exports = (tag, { data }) => {
+  const { contentCatalog, site } = data.root
+  const pages = contentCatalog.getPages(({ asciidoc, out }) => {
+    if (!out || !asciidoc) return
+    const pageTags = asciidoc.attributes['page-tags']
+    return pageTags && pageTags.split(', ').includes(tag)
+  })
+  const { buildPageUiModel } = require.main.require('@antora/page-composer/build-ui-model')
+  return pages.map((page) => buildPageUiModel(site, page, contentCatalog))
+}
+----
+
+이 경우 항목 객체의 사용이 더 간단하고 친숙합니다:
+
+[source,hbs]
+----
+{{#each (pages-with-tag 'tutorial')}}
+<a href="{{{relativize ./url}}}">{{{./doctitle}}}</a>
+{{/each}}
+----
+
+이 헬퍼를 기반으로 다양한 사용자 정의와 사용자 정의 컬렉션을 구현할 수 있습니다.
+
+CAUTION: 사용할 모든 헬퍼가 템플릿을 사용하는 각 페이지에 대해 호출된다는 점에 유의하세요. 이는 성능에 영향을 줄 수 있습니다. 사이트의 모든 페이지에서 호출되는 경우 사이트 생성 속도를 늦추지 않도록 작업이 효율적인지 확인하세요.
+
+헬퍼를 사용하는 대신 Antora 확장을 작성하는 것이 더 나은 옵션인지 고려해 볼 수 있습니다.
+
+== 최신 릴리스 노트 찾기
+
+다음은 release-notes라는 컴포넌트에서 최신 릴리스 노트를 찾는 또 다른 헬퍼 예제입니다.
+
+[source,js]
+----
+'use strict'
+
+module.exports = (numOfItems, { data }) => {
+  const { contentCatalog, site } = data.root
+  if (!contentCatalog) return
+  const rawPages = getDatedReleaseNotesRawPages(contentCatalog)
+  const pageUiModels = turnRawPagesIntoPageUiModels(site, rawPages, contentCatalog)
+  return getMostRecentlyUpdatedPages(pageUiModels, numOfItems)
+}
+
+let buildPageUiModel
+
+function getDatedReleaseNotesRawPages (contentCatalog) {
+  return contentCatalog.getPages(({ asciidoc, out }) => {
+    if (!asciidoc || !out) return
+    return getReleaseNotesWithRevdate(asciidoc)
+  })
+}
+
+function getReleaseNotesWithRevdate (asciidoc) {
+  const attributes = asciidoc.attributes
+  return asciidoc.attributes && isReleaseNotes(attributes) && hasRevDate(attributes)
+}
+
+function isReleaseNotes (attributes) {
+  return attributes['page-component-name'] === 'release-notes'
+}
+
+function hasRevDate (attributes) {
+  return 'page-revdate' in attributes
+}
+
+function turnRawPagesIntoPageUiModels (site, pages, contentCatalog) {
+  buildPageUiModel ??= module.parent.require('@antora/page-composer/build-ui-model').buildPageUiModel
+  return pages
+    .map((page) => buildPageUiModel(site, page, contentCatalog))
+    .filter((page) => isValidDate(page.attributes?.revdate))
+    .sort(sortByRevDate)
+}
+
+function isValidDate (dateStr) {
+  return !isNaN(Date.parse(dateStr))
+}
+
+function sortByRevDate (a, b) {
+  return new Date(b.attributes.revdate) - new Date(a.attributes.revdate)
+}
+
+function getMostRecentlyUpdatedPages (pageUiModels, numOfItems) {
+  return getResultList(pageUiModels, Math.min(pageUiModels.length, numOfItems))
+}
+
+function getResultList (pageUiModels, maxNumberOfPages) {
+  const resultList = []
+  for (let i = 0; i < maxNumberOfPages; i++) {
+    const page = pageUiModels[i]
+    if (page.attributes?.revdate) resultList.push(getSelectedAttributes(page))
+  }
+  return resultList
+}
+
+function getSelectedAttributes (page) {
+  const latestVersion = getLatestVersion(page.contents.toString())
+  return {
+    latestVersionAnchor: latestVersion?.anchor,
+    latestVersionName: latestVersion?.innerText,
+    revdateWithoutYear: removeYear(page.attributes?.revdate),
+    title: cleanTitle(page.title),
+    url: page.url,
+  }
+}
+
+function getLatestVersion (contentsStr) {
+  const firstVersion = contentsStr.match(/<h2 id="([^"]+)">(.+?)<\/h2>/)
+  if (!firstVersion) return
+  const result = { anchor: firstVersion[1] }
+  if (isVersion(firstVersion[2])) result.innerText = firstVersion[2]
+  return result
+}
+
+function isVersion (versionText) {
+  return /^[0-9]+\.[0-9]+(?:\.[0-9]+)?/.test(versionText)
+}
+
+function removeYear (dateStr) {
+  if (!isValidDate(dateStr)) return
+  const dateObj = new Date(dateStr)
+  return `${dateObj.toLocaleString('default', { month: 'short' })} ${dateObj.getDate()}`
+}
+
+function cleanTitle (title) {
+  return title.split('Release Notes')[0].trim()
+}
+----
+
+다음은 릴리스 노트 목록을 만드는 데 사용할 수 있는 방법입니다.
+
+[source,hbs]
+----
+<ul>
+{{#each (latest-release-notes 10)}}
+  <li><a href="{{relativize ./url}}#{{./latestVersionAnchor}}">{{./title}} ({{./revdateWithoutYear}})</a></li>
+{{/each}}
+</ul>
+----

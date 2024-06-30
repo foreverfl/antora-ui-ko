@@ -1,0 +1,71 @@
+= 인라인 텍스트
+
+이 페이지에서는 시각적으로 강조된 페이지 내용의 텍스트를 스타일링하는 방법을 설명합니다.
+
+== 굵은 텍스트 (<strong>)
+
+사이트에서 굵게 표시된 텍스트가 어떻게 나타나는지는 UI에 의해 로드된 폰트와 UI가 ``<strong>`` HTML 태그에 적용하는 CSS 스타일에 따라 다릅니다.
+
+[source,html]
+----
+A bold <strong>word</strong>, or a bold <strong>phrase of text</strong>.
+----
+
+``<strong>``은 의미론적 HTML 요소이므로 브라우저에서 기본 스타일링(`font-weight: bold`)을 자동으로 상속받습니다. 브라우저 스타일을 재정의하려면 UI의 스타일시트에서 `strong` 선택자에 속성을 정의해야 합니다.
+
+기본 UI에서 ``<strong>`` 요소는 현재 서체(Roboto)의 500 폰트 두께로 스타일링됩니다. 예를 들어:
+
+====
+A bold *word*, or a bold *phrase of text*.
+====
+
+== 이탤릭 텍스트 (<em>)
+
+이탤릭체 텍스트가 사이트에서 어떻게 나타나는지는 UI에 의해 로드된 폰트와 UI가 ``<em>`` HTML 태그에 적용하는 CSS 스타일에 따라 다릅니다.
+
+[source,html]
+----
+An italic <em>word</em>, or an italic <em>phrase of text</em>.
+----
+
+``<em>``은 의미론적 HTML 요소이므로 브라우저에서 기본 스타일링(`font-style: italic`)을 자동으로 상속받습니다. 브라우저 스타일을 재정의하려면 UI의 스타일시트에서 ``em`` 선택자에 속성을 정의해야 합니다.
+
+기본 UI에서 ``em`` 요소는 현재 서체(Roboto)의 이탤릭 폰트 변형으로 스타일링됩니다. 예를 들어:
+
+====
+An italic __word__, or an italic __phrase of text__.
+====
+
+== 고정폭 텍스트 (<code>)
+
+인라인 고정폭 텍스트가 어떻게 표시되는지는 UI에서 로드한 고정폭 폰트와 ``<code>`` HTML 태그에 적용하는 CSS 스타일에 따라 다릅니다.
+
+[source,html]
+----
+A monospace <code>word</code>, or a monospace <code>phrase of text</code>.
+----
+
+``<code>``는 의미론적 HTML 요소이므로 브라우저에서 기본 스타일링(`font-family: monospace`)을 자동으로 상속받습니다. 브라우저 스타일을 재정의하려면 UI의 스타일시트에서 ``code`` 선택자에 속성을 정의해야 합니다.
+
+기본 UI에서 ``code`` 요소는 스타일시트에서 로드한 고정폭 폰트(Roboto Mono)를 사용하여 스타일링됩니다. 예를 들어:
+
+====
+A monospace ``word``, or a monospace ``phrase of text``.
+====
+
+== 강조된 텍스트 (<mark>)
+
+강조된(또는 표시된) 텍스트가 사이트에서 어떻게 나타나는지는 UI가 ``<mark>`` HTML 태그에 적용하는 CSS 스타일에 따라 다릅니다.
+
+[source,html]
+----
+Let&#8217;s add some <mark>highlight</mark> to it.
+----
+
+``<mark>``는 의미론적 HTML 요소이므로 브라우저에서 기본 스타일링(``background-color: yellow``)을 자동으로 상속받습니다. 다음은 예시입니다:
+
+====
+Let's add some #highlight# to it.
+====
+
+브라우저 스타일을 재정의하려면 UI의 스타일시트에서 ``mark`` 선택자에 속성을 정의해야 합니다.

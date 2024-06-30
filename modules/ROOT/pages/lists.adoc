@@ -1,0 +1,67 @@
+= 리스트
+
+== 순서 있는 목록 번호 매기기
+
+브라우저는 순서 있는 목록에 자동으로 번호를 매기고 목록 깊이에 따라 다음 순서로 번호 매기기 스타일을 선택합니다: decimal, lower-alpha, lower-roman, upper-alpha, upper-roman.
+
+AsciiDoc에서는 작성자가 순서 있는 목록의 번호 매기기 스타일을 재정의할 수 있습니다. 다음은 그 출력의 예시입니다:
+
+[source,html]
+----
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li><p>a</p></li>
+<li><p>b</p></li>
+<li><p>c</p></li>
+</ol>
+</div>
+----
+
+이 사용자 정의를 지원하려면 스타일시트에서 ``<ol>`` 요소의 다음 클래스에 list-style-type 속성을 할당해야 합니다.
+
+[cols="1,1"]
+|===
+|<ol> 클래스 |list-style-type 속성 값
+
+|arabic |decimal
+|decimal |decimal
+|decimal-leading-zero |decimal-leading-zero
+|loweralpha |lower-alpha
+|lowergreek |lower-greek
+|lowerroman |lower-roman
+|upperalpha |upper-alpha
+|upperroman |upper-roman
+|===
+
+== 체크리스트
+
+체크리스트는 체크박스 마커(체크되거나 체크되지 않은)가 접두사로 붙은 항목이 있는 순서 없는 목록입니다. 다음은 체크리스트를 생성하는 AsciiDoc 소스 예제입니다:
+
+[source,asciidoc]
+----
+* [ ] todo
+* [x] done!
+----
+
+폰트 기반 아이콘이 활성화된 경우(`icons=font`), 체크박스는 목록 항목 텍스트를 포함하는 단락 요소의 첫 번째 요소로 삽입됩니다.
+
+[source,html]
+----
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p><i class="fa fa-square-o"> todo</p>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"> done!</p>
+</li>
+</ul>
+</div>
+----
+
+권장되는 접근 방식은 목록 마커를 숨기고(`list-style: none`), 배경 이미지나 `before` 의사 요소를 사용하여 아이콘 요소에 체크박스 글리프를 추가하는 것입니다.
+
+다음은 표시될 수 있는 모습입니다:
+
+* [ ] todo
+* [x] done!

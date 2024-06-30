@@ -1,0 +1,36 @@
+= 경고문
+
+경고문(또는 알림)은 특별한 레이블이나 아이콘으로 콘텐츠에 주의를 끌도록 도와줍니다.
+
+== 경고문 블록
+
+경고문 블록은 테이블입니다. 테이블 제목 요소는 블록 클래스에 의해 지정됩니다: tip, note, important, warning, 또는 caution. 다음은 테이블 제목이 warning인 경고문을 생성하는 AsciiDoc 소스 예제입니다:
+
+[source,asciidoc]
+----
+WARNING: 조심하세요!
+----
+
+폰트 기반 아이콘이 활성화된 경우(`icons=font`), 테이블 제목 텍스트는 관련 아이콘으로 대체됩니다.
+
+[source,html]
+----
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Watch out!</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+----
+
+다음은 제목이 텍스트로 표시될 때 나타날 수 있는 모습입니다:
+
+WARNING: Watch out!

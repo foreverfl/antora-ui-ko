@@ -1,0 +1,57 @@
+= UI 매크로
+
+Asciidoctor는 기본적으로 세 가지 UI 요소 표현을 지원하며, 이는 해당하는 인라인 UI 매크로로 만들어집니다.
+
+* 버튼 (btn 매크로)
+* 키 바인딩 (kbd 매크로)
+* 메뉴 (menu 매크로)
+
+UI 요소는 시맨틱 HTML 요소를 사용하여 출력되므로 브라우저에서 일부 기본 스타일을 상속받습니다. 그러나 적절한 모양을 위해서는 추가적인 스타일링이 필요합니다.
+
+== 버튼
+
+버튼은 화면상의 버튼을 나타내기 위한 것입니다(``btn:[Save]``). 그러나 독자가 상호작용 가능하다고 혼동하지 않도록 실제 버튼처럼 보이지 않아야 합니다. 따라서 버튼은 기본적으로 굵은 텍스트로 렌더링됩니다:
+
+[source,html]
+----
+<b class="button">Save</b>
+----
+
+전통적으로 버튼 참조는 다음과 같이 텍스트를 대괄호로 둘러싸서 스타일링됩니다:
+
+btn:[Save]
+
+== 키 바인딩
+
+키 바인딩은 단일 키(kbd:[F11])나 키 시퀀스(kbd:[Ctrl+F])일 수 있습니다. 다음은 이 두 형식에 대해 생성되는 HTML입니다.
+
+[source,html]
+----
+<kbd>F11</kbd>
+<span class="keyseq"><kbd>Ctrl</kbd>+<kbd>F</kbd></span>
+----
+
+다음은 이들이 표시될 수 있는 모습입니다:
+
+[%hardbreaks]
+kbd:[F11]
+kbd:[Ctrl+F]
+
+
+== 메뉴
+
+메뉴는 최상위 메뉴 참조(``menu:File[]``)나 중첩된 선택(``menu:File[Save]``)일 수 있습니다. 다음은 이 두 형식에 대해 생성되는 HTML입니다.
+
+[source,html]
+----
+<b class="menuref">파일</b>
+<span class="menuseq"><b class="menu">파일</b>&#160;<b class="caret">&#8250;</b> <b class="menuitem">저장</b></span>
+----
+
+이는 다음과 같이 렌더링될 수 있습니다:
+
+menu:File[]
+
+menu:File[Save]
+
+메뉴 참조에 적용되는 기본 스타일링은 일반적으로 충분합니다.
